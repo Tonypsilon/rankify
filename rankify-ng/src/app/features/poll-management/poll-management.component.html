@@ -1,0 +1,104 @@
+<section class="poll-management" @if(poll)>
+  <div class="poll-header">
+    <h1>{{ poll?.name }}</h1>
+    <div class="poll-status" [class.open]="poll?.isOpen">
+      Status: {{ poll?.isOpen ? 'Open' : 'Closed' }}
+    </div>
+  </div>
+  
+  <div class="poll-actions">
+    <button class="btn btn-primary" (click)="togglePollStatus()" [disabled]="updating">
+      {{ poll?.isOpen ? 'Close Poll' : 'Open Poll' }}
+    </button>
+    <button class="btn btn-secondary" [routerLink]="['/cast-ballot', poll?.name]" 
+            [disabled]="!poll?.isOpen">
+      Cast Ballot
+    </button>
+    <button class="btn btn-outlined" (click)="copyPollLink()">
+      Copy Poll Link
+    </button>
+  </div>
+  
+  <div class="poll-details">
+    <h2>Poll Options</h2>
+    <ul class="options-list">
+      @for (option of poll?.options || []; track option.id) {
+        <li>{{ option.name }}</li>
+      }
+    </ul>
+  </div>
+  
+  @if (ballots.length > 0) {
+    <div class="poll-results">
+      <h2>Results</h2>
+      <p>Total ballots cast: {{ ballots.length }}</p>
+      
+      <!-- Simple results visualization -->
+      <div class="results-summary">
+        @for (result of rankSummary; track result.optionName) {
+          <div class="result-item">
+            <strong>{{ result.optionName }}</strong>
+            <div class="rank-bars">
+              @for (rankCount of result.rankCounts; track $index; let rank = $index) {
+                @if (rankCount > 0) {
+                  <div class="rank-bar" 
+                       [style.width]="(rankCount / maxVotes * 100) + '%'"
+                       [style.opacity]="1 - (rank * 0.2)">
+                    Rank {{ rank + 1 }}: {{ rankCount }} votes
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        }
+      </div>
+      
+      <p class="results-note">
+        Note: This is a simplified visualization. In a real application, you would implement a more sophisticated 
+        results calculation, possibly on the backend.
+      </p>
+    </div>
+  }
+  
+  @if (ballots.length === 0 && !loadingBallots) {
+    <div class="no-results">
+      <p>No ballots have been cast yet.</p>
+    </div>
+  }
+  
+  @if (loadingBallots) {
+    <div class="loading">
+      <p>Loading ballots...</p>
+    </div>
+  }
+  
+  @if (error) {
+    <div class="notification error">
+      {{ error }}
+    </div>
+  }
+  
+  @if (successMessage) {
+    <div class="notification success">
+      {{ successMessage }}
+    </div>
+  }
+  
+  <div class="back-link">
+    <a routerLink="/">Back to Home</a>
+  </div>
+</section>
+
+@if (!poll && !error) {
+  <div class="loading-container">
+    <p>Loading poll...</p>
+  </div>
+}
+
+@if (!poll && error) {
+  <div class="error-container">
+    <h2>Error</h2>
+    <p>{{ error }}</p>
+    <a routerLink="/" class="btn btn-primary">Back to Home</a>
+  </div>
+}

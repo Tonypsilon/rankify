@@ -1,0 +1,64 @@
+<section class="home-container">
+  <div class="hero">
+    <h1>Welcome to Rankify</h1>
+    <p>Create and manage priority voting polls with ease</p>
+    <div class="action-buttons">
+      <a routerLink="/create-poll" class="btn btn-primary">Create New Poll</a>
+    </div>
+  </div>
+
+  <div class="search-bar">
+    <form (ngSubmit)="searchPoll()" class="search-form">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        name="searchTerm"
+        placeholder="Search polls by name"
+        class="form-control"
+        (keyup.enter)="searchPoll()"
+      />
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="!searchTerm"
+      >
+        Search
+      </button>
+    </form>
+  </div>
+
+  @if (polls.length > 0) {
+    <div class="existing-polls">
+      <h2>Search Results</h2>
+      <div class="polls-grid">
+        @for (poll of polls; track poll.id) {
+          <div class="poll-card">
+            <h3>{{ poll.name }}</h3>
+            <p>Status: <span [class.status-open]="poll.isOpen" [class.status-closed]="!poll.isOpen">{{ poll.isOpen ? 'Open' : 'Closed' }}</span></p>
+            <p>Options: {{ poll.options.length }}</p>
+            <div class="card-actions">
+              <a [routerLink]="['/polls', poll.name]" class="btn btn-secondary">Manage</a>
+              <a [routerLink]="['/cast-ballot', poll.name]" class="btn btn-outlined" 
+                [class.disabled]="!poll.isOpen" 
+                [attr.disabled]="!poll.isOpen ? true : null">
+                Cast Ballot
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (loading) {
+    <div class="loading">
+      <p>Loading polls...</p>
+    </div>
+  }
+
+  @if (error) {
+    <div class="error">
+      <p>{{ error }}</p>
+    </div>
+  }
+</section>

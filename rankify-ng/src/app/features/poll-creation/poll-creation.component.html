@@ -1,0 +1,57 @@
+<section class="poll-creation">
+  <h1>Create a New Poll</h1>
+  
+  <form [formGroup]="pollForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="pollName">Poll Name</label>
+      <input type="text" id="pollName" formControlName="name" placeholder="Enter a unique name">
+      @if (name.invalid && (name.dirty || name.touched)) {
+        <div class="error-message">
+          @if (name.errors?.['required']) {
+            <span>Poll name is required</span>
+          }
+          @if (name.errors?.['minlength']) {
+            <span>Poll name must be at least 3 characters</span>
+          }
+        </div>
+      }
+    </div>
+    
+    <div class="form-group">
+      <label>Poll Options</label>
+      <div class="options-container" formArrayName="options">
+        @for (option of options.controls; track option; let i = $index) {
+          <div class="option-row">
+            <input type="text" [formControlName]="i" placeholder="Enter an option">
+            <button type="button" class="btn-icon" (click)="removeOption(i)" aria-label="Remove option">
+              ×
+            </button>
+          </div>
+        }
+      </div>
+      
+      @if (options.invalid && options.errors?.['minLength']) {
+        <div class="error-message">
+          At least two options are required
+        </div>
+      }
+      
+      <button type="button" class="btn btn-secondary btn-sm" (click)="addOption()">
+        Add Option
+      </button>
+    </div>
+    
+    <div class="form-actions">
+      <button type="button" class="btn btn-outlined" (click)="goBack()">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!formValid || submitting">
+        {{ submitting ? 'Creating...' : 'Create Poll' }}
+      </button>
+    </div>
+  </form>
+  
+  @if (error) {
+    <div class="error-notification">
+      {{ error }}
+    </div>
+  }
+</section>

@@ -1,0 +1,91 @@
+<section class="ballot-casting" @if(poll)>
+  <h1>Cast Your Ballot for: {{ poll?.name }}</h1>
+  
+  <div class="instructions">
+    <p>Drag and drop options to rank them by priority. Options in the same group have equal priority.</p>
+    <p>You can also dismiss options by dragging them to the "Not Ranked" section.</p>
+  </div>
+  
+  @if (poll?.isOpen) {
+    <div class="ballot-container">
+      <div class="ranking-lists">
+        @for (rankGroup of rankGroups; track $index; let i = $index) {
+          <div class="rank-group">
+            <h3>Priority Level {{ i + 1 }}</h3>
+            <div
+              cdkDropList
+              [cdkDropListData]="rankGroup"
+              [id]="'rank-' + i"
+              class="rank-list"
+              [cdkDropListConnectedTo]="getConnectedListsFor(i)"
+              (cdkDropListDropped)="drop($event)">
+              @for (option of rankGroup; track option.id) {
+                <div class="rank-item" cdkDrag>
+                  {{ option.name }}
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="not-ranked">
+          <h3>Not Ranked</h3>
+          <div
+            cdkDropList
+            [cdkDropListData]="unrankedOptions"
+            id="unranked"
+            class="rank-list"
+            [cdkDropListConnectedTo]="getConnectedLists()"
+            (cdkDropListDropped)="drop($event)">
+            @for (option of unrankedOptions; track option.id) {
+              <div class="rank-item" cdkDrag>
+                {{ option.name }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      
+      <div class="ballot-actions">
+        <button class="btn btn-outlined" (click)="resetRanking()">Reset</button>
+        <button class="btn btn-primary" (click)="submitBallot()" [disabled]="submitting || isAllUnranked()">
+          {{ submitting ? 'Submitting...' : 'Submit Ballot' }}
+        </button>
+      </div>
+    </div>
+  }
+  
+  @if (!poll?.isOpen) {
+    <div class="poll-closed">
+      <p>This poll is currently closed. You cannot cast a ballot at this time.</p>
+      <a routerLink="/" class="btn btn-primary">Back to Home</a>
+    </div>
+  }
+  
+  @if (successMessage) {
+    <div class="success-message">
+      <p>{{ successMessage }}</p>
+      <a routerLink="/" class="btn btn-primary">Back to Home</a>
+    </div>
+  }
+  
+  @if (error) {
+    <div class="error-notification">
+      {{ error }}
+    </div>
+  }
+</section>
+
+@if (!poll && !error) {
+  <div class="loading-container">
+    <p>Loading poll...</p>
+  </div>
+}
+
+@if (!poll && error) {
+  <div class="error-container">
+    <h2>Error</h2>
+    <p>{{ error }}</p>
+    <a routerLink="/" class="btn btn-primary">Back to Home</a>
+  </div>
+}

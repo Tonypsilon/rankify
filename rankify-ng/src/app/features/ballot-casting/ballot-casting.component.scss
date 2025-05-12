@@ -1,0 +1,189 @@
+.ballot-casting {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 1.5rem;
+  color: #343a40;
+}
+
+.instructions {
+  background-color: #f8f9fa;
+  border-left: 4px solid #4a6da7;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border-radius: 4px;
+}
+
+.instructions p:last-child {
+  margin-bottom: 0;
+}
+
+.ranking-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.rank-group, .not-ranked {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+}
+
+.rank-group h3, .not-ranked h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #343a40;
+}
+
+.rank-list {
+  min-height: 60px;
+  border: 1px dashed #ced4da;
+  border-radius: 4px;
+  padding: 0.5rem;
+  background-color: #f8f9fa;
+}
+
+.rank-list.cdk-drop-list-dragging {
+  border-color: #4a6da7;
+}
+
+.rank-item {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: move;
+  transition: box-shadow 0.3s ease;
+}
+
+.rank-item:last-child {
+  margin-bottom: 0;
+}
+
+.rank-item:hover {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.rank-item.cdk-drag-preview {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.rank-item.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.rank-item.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.rank-list.cdk-drop-list-dragging .rank-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.ballot-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.poll-closed, .success-message {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+}
+
+.poll-closed p, .success-message p {
+  margin-bottom: 1.5rem;
+}
+
+.success-message {
+  border-left: 4px solid #28a745;
+}
+
+.error-notification {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  color: white;
+  background-color: #dc3545;
+  border-radius: 4px;
+}
+
+.loading-container, .error-container {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  color: white;
+  background-color: #4a6da7;
+  border-color: #4a6da7;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #3b5998;
+  border-color: #3b5998;
+}
+
+.btn-secondary {
+  color: white;
+  background-color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #5a6268;
+  border-color: #5a6268;
+}
+
+.btn-outlined {
+  color: #4a6da7;
+  background-color: transparent;
+  border-color: #4a6da7;
+}
+
+.btn-outlined:hover:not(:disabled) {
+  color: white;
+  background-color: #4a6da7;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .ballot-actions {
+    flex-direction: column;
+  }
+  
+  .ballot-actions button {
+    width: 100%;
+  }
+}
