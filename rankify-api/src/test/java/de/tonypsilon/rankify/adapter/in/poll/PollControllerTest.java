@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in;
+package de.tonypsilon.rankify.adapter.in.poll;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;

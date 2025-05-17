@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in;
+package de.tonypsilon.rankify.adapter.in.poll;
 
 record CreatePollResponse(String name) {
     CreatePollResponse {

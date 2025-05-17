@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in;
+package de.tonypsilon.rankify.adapter.in.poll;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
