@@ -1,5 +1,6 @@
 package de.tonypsilon.rankify.adapter.in.poll;
 
+import de.tonypsilon.rankify.adapter.in.poll.exception.InvalidPollNameException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -17,6 +18,9 @@ class CreatePollController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     ResponseEntity<CreatePollResponse> createPoll(RequestEntity<CreatePollCommand> commandRequestEntity) {
         final var command = commandRequestEntity.getBody();
+        if (command == null) {
+            throw new InvalidPollNameException();
+        }
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new CreatePollResponse(command.name()));
