@@ -1,11 +1,11 @@
 package de.tonypsilon.rankify.adapter.in.poll;
 
-import de.tonypsilon.rankify.adapter.in.poll.exception.InvalidPollNameException;
+import de.tonypsilon.rankify.domain.PollName;
 
-record CreatePollCommand(String name) {
-    public CreatePollCommand {
-        if (name == null || name.isBlank()) {
-            throw new InvalidPollNameException();
-        }
+record CreatePollCommand(PollName name) {
+
+    public static CreatePollCommand ofName(String name) {
+        return new CreatePollCommand(new PollName(name));
     }
+
 }

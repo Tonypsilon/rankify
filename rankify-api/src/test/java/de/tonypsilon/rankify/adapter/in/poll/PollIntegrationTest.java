@@ -2,6 +2,7 @@ package de.tonypsilon.rankify.adapter.in.poll;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -9,8 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,16 +24,14 @@ public class PollIntegrationTest {
 
     @Test
     void shouldCreateTwoPollsWithDifferentNames() {
-        final String[] pollNames = {"Test Poll 1", "Test Poll 2"};
-        final var createPollCommands = List
-                .of(new CreatePollCommand(pollNames[0]), new CreatePollCommand(pollNames[1]));
-        createPollCommands.forEach(this::postPoll);
+        postPoll(CreatePollCommand.ofName("Test 1"));
+        postPoll(CreatePollCommand.ofName("Test 2"));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "\t", "\n"})
     void shouldNotCreatePollWithInvalidName(final String pollName) throws Exception {
-        final var createPollCommand = new InvalidCreatePollCommand(pollName);
+        final var createPollCommand = InvalidCreatePollCommand.of(pollName);
         final var postPollErrorResponse = given()
                 .port(port)
                 .contentType(ContentType.JSON)
@@ -49,7 +46,13 @@ public class PollIntegrationTest {
         assertThat(postPollErrorResponse.message()).isEqualTo("Invalid poll name provided");
     }
 
-    private record InvalidCreatePollCommand(String name) {
+    private record InvalidCreatePollCommand(InvalidPollName name) {
+        private static InvalidCreatePollCommand of(String name) {
+            return new InvalidCreatePollCommand(new InvalidPollName(name));
+        }
+    }
+
+    private record InvalidPollName(String name) {
     }
 
     @Test
@@ -70,8 +73,42 @@ public class PollIntegrationTest {
     @Test
     void shouldFindCreatedPoll() {
         final var pollName = "Test Poll 1";
-        final var createPollCommand = new CreatePollCommand(pollName);
+        final var createPollCommand = CreatePollCommand.ofName(pollName);
         postPoll(createPollCommand);
+        final var pollResponse = given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/polls/" + pollName)
+                .then()
+                .statusCode(200)
+                .extract()
+                .response()
+                .as(PollResponse.class);
+        assertThat(pollResponse.name()).isEqualTo(new PollName(pollName));
+    }
+
+    @Test
+    void shouldNotFindPollWithoutName() throws Exception {
+        given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/polls/")
+                .then()
+                .statusCode(404);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\t", "\n"})
+    void shouldNotFindPollWithInvalidName(String invalidPollName) throws Exception {
+        given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/polls/" + invalidPollName)
+                .then()
+                .statusCode(404);
     }
 
     private void postPoll(CreatePollCommand createPollCommand) {
