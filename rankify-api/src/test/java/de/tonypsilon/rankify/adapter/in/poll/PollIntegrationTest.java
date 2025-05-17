@@ -24,7 +24,7 @@ public class PollIntegrationTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    void shouldCreateTwoPollsWithDifferentNames() throws Exception {
+    void shouldCreateTwoPollsWithDifferentNames() {
         final String[] pollNames = {"Test Poll 1", "Test Poll 2"};
         final var createPollCommands = List
                 .of(new CreatePollCommand(pollNames[0]), new CreatePollCommand(pollNames[1]));
@@ -53,7 +53,7 @@ public class PollIntegrationTest {
     }
 
     @Test
-    void shouldNotCreatePollWithNoName() throws Exception {
+    void shouldNotCreatePollWithNoName() {
         final var postPollErrorResponse = given()
                 .port(port)
                 .contentType(ContentType.JSON)
@@ -68,7 +68,7 @@ public class PollIntegrationTest {
     }
 
     @Test
-    void shouldFindCreatedPoll() throws Exception {
+    void shouldFindCreatedPoll() {
         final var pollName = "Test Poll 1";
         final var createPollCommand = new CreatePollCommand(pollName);
         postPoll(createPollCommand);
