@@ -11,6 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
+import java.util.Arrays;
+
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,8 +26,8 @@ public class PollIntegrationTest {
 
     @Test
     void shouldCreateTwoPollsWithDifferentNames() {
-        postPoll(CreatePollCommand.ofName("Test 1"));
-        postPoll(CreatePollCommand.ofName("Test 2"));
+        postPoll(createPollCommandOfNameAndOptions("Test 1", "Option 1", "Option 2"));
+        postPoll(createPollCommandOfNameAndOptions("Test 2", "Option 1", "Option 2"));
     }
 
     @ParameterizedTest
@@ -73,7 +75,7 @@ public class PollIntegrationTest {
     @Test
     void shouldFindCreatedPoll() {
         final var pollName = "Test Poll 1";
-        final var createPollCommand = CreatePollCommand.ofName(pollName);
+        final var createPollCommand = createPollCommandOfNameAndOptions(pollName, "Option 1", "Option 2");
         postPoll(createPollCommand);
         final var pollResponse = given()
                 .port(port)
@@ -128,5 +130,10 @@ public class PollIntegrationTest {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private CreatePollCommand createPollCommandOfNameAndOptions(String name, String... options) {
+        return CreatePollCommand
+                .ofNameAndOptions(name, Arrays.stream(options).map(Option::new).toList());
     }
 }
