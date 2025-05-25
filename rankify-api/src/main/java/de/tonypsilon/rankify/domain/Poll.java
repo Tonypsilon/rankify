@@ -40,7 +40,7 @@ public class Poll {
         return List.copyOf(options);
     }
 
-    public boolean isActive() {
-        return state == PollState.ACTIVE;
+    public PollState state() {
+        return state;
     }
 }
