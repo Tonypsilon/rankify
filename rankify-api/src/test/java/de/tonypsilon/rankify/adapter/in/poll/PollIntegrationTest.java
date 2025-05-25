@@ -28,8 +28,8 @@ public class PollIntegrationTest {
 
     @Test
     void shouldCreateTwoPollsWithDifferentNames() {
-        postPoll(createPollCommandOfNameAndOptions("Test 1", "Option 1", "Option 2"));
-        postPoll(createPollCommandOfNameAndOptions("Test 2", "Option 1", "Option 2"));
+        postPoll(createPollCommandOfNameAndOptions("Test-1", "Option 1", "Option 2"));
+        postPoll(createPollCommandOfNameAndOptions("Test-2", "Option 1", "Option 2"));
     }
 
     @ParameterizedTest
@@ -76,7 +76,7 @@ public class PollIntegrationTest {
 
     @Test
     void shouldFindCreatedPoll() {
-        final var pollName = "Test Poll 1";
+        final var pollName = "Test_Poll.1";
         final var createPollCommand = createPollCommandOfNameAndOptions(pollName, "Option 1", "Option 2");
         postPoll(createPollCommand);
         final var pollResponse = given()
