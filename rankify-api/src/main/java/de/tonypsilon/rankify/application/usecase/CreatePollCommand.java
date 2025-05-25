@@ -13,7 +13,7 @@ import java.util.SequencedSet;
 
 public record CreatePollCommand(PollName name, SequencedSet<Option> options) {
 
-    public static CreatePollCommand ofNameAndOptions(String name, List<Option> optionsCollection) {
+    public static CreatePollCommand ofNameAndOptions(PollName name, List<Option> optionsCollection) {
         var options = Collections.unmodifiableSequencedSet(new LinkedHashSet<>(optionsCollection));
         if (options.size() < 2) {
             throw new TooFewPollOptionsException();
@@ -21,7 +21,7 @@ public record CreatePollCommand(PollName name, SequencedSet<Option> options) {
         if (options.size() < optionsCollection.size()) {
             throw new DuplicateOptionsException();
         }
-        return new CreatePollCommand(new PollName(name), options);
+        return new CreatePollCommand(name, options);
     }
 
     public Poll toPoll() {
