@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in.poll;
+package de.tonypsilon.rankify.domain;
 
 public record Option(String name) {
     public Option {

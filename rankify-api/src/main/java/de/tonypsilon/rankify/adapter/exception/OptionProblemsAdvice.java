@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in.poll.exception;
+package de.tonypsilon.rankify.adapter.exception;
 
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import org.springframework.core.annotation.Order;

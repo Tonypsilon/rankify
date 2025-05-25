@@ -2,6 +2,8 @@ package de.tonypsilon.rankify.adapter.in.poll;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
+import de.tonypsilon.rankify.domain.Option;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import io.restassured.http.ContentType;
@@ -88,6 +90,7 @@ public class PollIntegrationTest {
                 .response()
                 .as(PollResponse.class);
         assertThat(pollResponse.name()).isEqualTo(new PollName(pollName));
+        assertThat(pollResponse.options()).containsExactly(new Option("Option 1"), new Option("Option 2"));
     }
 
     @Test

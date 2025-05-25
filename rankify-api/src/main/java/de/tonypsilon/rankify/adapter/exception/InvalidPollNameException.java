@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in.poll.exception;
+package de.tonypsilon.rankify.adapter.exception;
 
 public class InvalidPollNameException extends RuntimeException {
     public InvalidPollNameException() {

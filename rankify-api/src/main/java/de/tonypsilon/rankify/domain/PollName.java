@@ -1,6 +1,6 @@
 package de.tonypsilon.rankify.domain;
 
-import de.tonypsilon.rankify.adapter.in.poll.exception.InvalidPollNameException;
+import de.tonypsilon.rankify.adapter.exception.InvalidPollNameException;
 
 public record PollName(String value) {
     public PollName {
