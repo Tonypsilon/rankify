@@ -1,15 +1,20 @@
 package de.tonypsilon.rankify.adapter.out.poll;
 
-import de.tonypsilon.rankify.adapter.exception.PollAlreadyExistsException;
 import de.tonypsilon.rankify.domain.Poll;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.domain.PollRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * In-memory implementation of the PollRepository interface.
+ * Works with defensive copies of Poll objects so that modifications of Poll objects
+ * don't affect the stored data.
+ */
 @Repository
 public class InMemoryPollRepository implements PollRepository {
 
@@ -17,16 +22,17 @@ public class InMemoryPollRepository implements PollRepository {
 
     @Override
     public Optional<Poll> findByName(PollName name) {
-        return Optional.ofNullable(polls.get(name));
+        return Optional.ofNullable(polls.get(name))
+                .map(this::copyPoll);
     }
 
     @Override
     public PollName save(Poll poll) {
-        if (polls.containsKey(poll.name())) {
-            throw new PollAlreadyExistsException(poll.name());
-        }
-        polls.put(poll.name(), poll);
+        polls.put(poll.name(), copyPoll(poll));
         return poll.name();
     }
 
+    private Poll copyPoll(Poll poll) {
+        return Poll.withNameOptionsAndState(poll.name(), new LinkedHashSet<>(poll.options()), poll.state());
+    }
 }

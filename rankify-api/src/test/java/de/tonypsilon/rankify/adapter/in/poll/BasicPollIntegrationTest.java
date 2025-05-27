@@ -70,8 +70,26 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
     }
 
     @Test
-    void shouldFindCreatedPoll() {
+    void shouldNotCreateTwoPollsWithSameName() throws Exception {
         final var pollName = new PollName("Test_Poll.1");
+        postPoll(createPollCommandOfNameAndOptions(pollName, "Option 1", "Option 2"));
+        final var postPollErrorResponse = given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsString(createPollCommandOfNameAndOptions(pollName, "Option 3", "Option 4")))
+                .when()
+                .post("/polls")
+                .then()
+                .statusCode(400)
+                .extract()
+                .response()
+                .as(ErrorResponse.class);
+        assertThat(postPollErrorResponse.message()).isEqualTo("Poll with name Test_Poll.1 already exists");
+    }
+
+    @Test
+    void shouldFindCreatedPoll() {
+        final var pollName = new PollName("Test-Poll.1");
         final var createPollCommand = createPollCommandOfNameAndOptions(pollName, "Option 1", "Option 2");
         postPoll(createPollCommand);
         final var pollResponse = findPoll(pollName);

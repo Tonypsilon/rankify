@@ -14,6 +14,9 @@ public class CreatePollUsecase {
     }
 
     public PollName createPoll(final CreatePollCommand command) {
+        pollRepository.findByName(command.name()).ifPresent(poll -> {
+            throw new PollAlreadyExistsException(command.name());
+        });
         return pollRepository.save(command.toPoll());
     }
 }

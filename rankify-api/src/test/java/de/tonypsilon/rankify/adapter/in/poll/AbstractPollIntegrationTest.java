@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
 import de.tonypsilon.rankify.domain.PollName;
+import de.tonypsilon.rankify.domain.PollState;
+import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import io.restassured.http.ContentType;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -49,5 +51,42 @@ abstract class AbstractPollIntegrationTest {
                 .extract()
                 .response()
                 .as(PollResponse.class);
+    }
+
+    protected PollResponse changePollState(PollName pollName, PollState pollState) {
+        try {
+            System.out.println(objectMapper.writeValueAsString(new ChangePollStateCommand(pollState)));
+            return given()
+                    .port(port)
+                    .contentType(ContentType.JSON)
+                    .body(objectMapper.writeValueAsString(new ChangePollStateCommand(pollState)))
+                    .when()
+                    .patch("/polls/" + pollName.value())
+                    .then()
+                    .statusCode(200)
+                    .extract()
+                    .response()
+                    .as(PollResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected ErrorResponse changePollStateErrorResponse(PollName pollName, PollState pollState) {
+        try {
+            return given()
+                    .port(port)
+                    .contentType(ContentType.JSON)
+                    .body(objectMapper.writeValueAsString(new ChangePollStateCommand(pollState)))
+                    .when()
+                    .patch("/polls/" + pollName.value())
+                    .then()
+                    .statusCode(400)
+                    .extract()
+                    .response()
+                    .as(ErrorResponse.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

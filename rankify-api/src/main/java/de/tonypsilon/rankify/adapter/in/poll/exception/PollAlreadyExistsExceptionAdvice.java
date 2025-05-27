@@ -1,5 +1,6 @@
-package de.tonypsilon.rankify.adapter.exception;
+package de.tonypsilon.rankify.adapter.in.poll.exception;
 
+import de.tonypsilon.rankify.application.usecase.PollAlreadyExistsException;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
@@ -9,13 +10,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @ControllerAdvice
 @Order(-1)
-public class InvalidPollNameExceptionAdvice {
+public class PollAlreadyExistsExceptionAdvice {
 
     @ResponseBody
-    @ExceptionHandler(InvalidPollNameException.class)
-    ResponseEntity<ErrorResponse> handleInvalidPollNameException(InvalidPollNameException exception) {
+    @ExceptionHandler(PollAlreadyExistsException.class)
+    ResponseEntity<ErrorResponse> handlePollAlreadyExistsException(PollAlreadyExistsException exception) {
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorResponse("Invalid poll name provided"));
+                .body(new ErrorResponse(exception.getMessage()));
     }
 }

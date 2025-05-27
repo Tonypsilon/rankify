@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.exception;
+package de.tonypsilon.rankify.domain;
 
 public class TooFewPollOptionsException extends RuntimeException {
     public TooFewPollOptionsException() {

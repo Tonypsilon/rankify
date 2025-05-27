@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.exception;
+package de.tonypsilon.rankify.application.usecase;
 
 import de.tonypsilon.rankify.domain.PollName;
 

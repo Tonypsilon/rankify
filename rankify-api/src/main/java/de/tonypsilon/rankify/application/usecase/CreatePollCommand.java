@@ -1,10 +1,10 @@
 package de.tonypsilon.rankify.application.usecase;
 
-import de.tonypsilon.rankify.adapter.exception.DuplicateOptionsException;
-import de.tonypsilon.rankify.adapter.exception.TooFewPollOptionsException;
+import de.tonypsilon.rankify.adapter.in.poll.exception.DuplicateOptionsException;
 import de.tonypsilon.rankify.domain.Option;
 import de.tonypsilon.rankify.domain.Poll;
 import de.tonypsilon.rankify.domain.PollName;
+import de.tonypsilon.rankify.domain.TooFewPollOptionsException;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;

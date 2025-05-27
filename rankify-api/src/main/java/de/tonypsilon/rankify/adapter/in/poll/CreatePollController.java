@@ -1,6 +1,6 @@
 package de.tonypsilon.rankify.adapter.in.poll;
 
-import de.tonypsilon.rankify.adapter.exception.InvalidPollNameException;
+import de.tonypsilon.rankify.adapter.in.poll.exception.InvalidPollNameException;
 import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
 import de.tonypsilon.rankify.application.usecase.CreatePollUsecase;
 import org.springframework.http.HttpStatus;
