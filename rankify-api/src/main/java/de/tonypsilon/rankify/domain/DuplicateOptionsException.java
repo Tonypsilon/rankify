@@ -1,4 +1,4 @@
-package de.tonypsilon.rankify.adapter.in.poll.exception;
+package de.tonypsilon.rankify.domain;
 
 public class DuplicateOptionsException extends RuntimeException {
     public DuplicateOptionsException() {

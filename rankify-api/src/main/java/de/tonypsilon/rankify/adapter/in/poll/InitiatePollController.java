@@ -1,8 +1,8 @@
 package de.tonypsilon.rankify.adapter.in.poll;
 
 import de.tonypsilon.rankify.adapter.in.poll.exception.InvalidPollNameException;
-import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
 import de.tonypsilon.rankify.application.usecase.CreatePollUsecase;
+import de.tonypsilon.rankify.application.usecase.InitiatePollCommand;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/polls")
-class CreatePollController {
+class InitiatePollController {
 
     private final CreatePollUsecase createPollUsecase;
 
-    CreatePollController(final CreatePollUsecase createPollUsecase) {
+    InitiatePollController(final CreatePollUsecase createPollUsecase) {
         this.createPollUsecase = createPollUsecase;
     }
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<CreatePollResponse> createPoll(RequestEntity<CreatePollCommand> commandRequestEntity) {
+    ResponseEntity<InitiatePollResponse> createPoll(RequestEntity<InitiatePollCommand> commandRequestEntity) {
         final var command = commandRequestEntity.getBody();
         if (command == null) {
             throw new InvalidPollNameException();
@@ -32,6 +32,6 @@ class CreatePollController {
         var pollName = createPollUsecase.createPoll(command);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(new CreatePollResponse(pollName));
+                .body(new InitiatePollResponse(pollName));
     }
 }

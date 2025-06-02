@@ -1,6 +1,6 @@
 package de.tonypsilon.rankify.adapter.in.poll;
 
-import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
+import de.tonypsilon.rankify.application.usecase.InitiatePollCommand;
 import de.tonypsilon.rankify.domain.Option;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.domain.PollState;
@@ -17,7 +17,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldActivateInactivePoll() {
         // Given
         final var pollName = new PollName("Test_Poll1");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -35,7 +35,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldActivateActivePoll() {
         // Given
         final var pollName = new PollName("Test_Poll2");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -52,7 +52,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldNotActivateFinishedPoll() {
         // Given
         final var pollName = new PollName("Test_Poll3");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -70,7 +70,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldDeactivateActivePoll() {
         // Given
         final var pollName = new PollName("Test_Poll4");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -87,7 +87,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldDeactivateInactivePoll() {
         // Given
         final var pollName = new PollName("Test_Poll5");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -105,7 +105,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldNotDeactivateFinishedPoll() {
         // Given
         final var pollName = new PollName("Test_Poll6");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -122,7 +122,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldFinishActivePoll() {
         // Given
         final var pollName = new PollName("Test_Poll7");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -139,7 +139,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldFinishInactivePoll() {
         // Given
         final var pollName = new PollName("Test_Poll8");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );
@@ -157,7 +157,7 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
     void shouldFinishFinishedPoll() {
         // Given
         final var pollName = new PollName("Test_Poll9");
-        postPoll(CreatePollCommand.ofNameAndOptions(
+        postPoll(InitiatePollCommand.ofNameAndOptions(
                 pollName,
                 List.of(new Option("Option 1"), new Option("Option 2")))
         );

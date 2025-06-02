@@ -1,6 +1,6 @@
 package de.tonypsilon.rankify.adapter.in.poll;
 
-import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
+import de.tonypsilon.rankify.application.usecase.InitiatePollCommand;
 import de.tonypsilon.rankify.domain.Option;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.domain.PollState;
@@ -23,8 +23,8 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
 
     @Test
     void shouldCreateTwoPollsWithDifferentNames() {
-        postPoll(createPollCommandOfNameAndOptions(new PollName("Test-1"), "Option 1", "Option 2"));
-        postPoll(createPollCommandOfNameAndOptions(new PollName("Test-2"), "Option 1", "Option 2"));
+        postPoll(createPollCommandOfNameAndBallot(new PollName("Test-1"), "Option 1", "Option 2"));
+        postPoll(createPollCommandOfNameAndBallot(new PollName("Test-2"), "Option 1", "Option 2"));
     }
 
     @ParameterizedTest
@@ -72,11 +72,11 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
     @Test
     void shouldNotCreateTwoPollsWithSameName() throws Exception {
         final var pollName = new PollName("Test_Poll.1");
-        postPoll(createPollCommandOfNameAndOptions(pollName, "Option 1", "Option 2"));
+        postPoll(createPollCommandOfNameAndBallot(pollName, "Option 1", "Option 2"));
         final var postPollErrorResponse = given()
                 .port(port)
                 .contentType(ContentType.JSON)
-                .body(objectMapper.writeValueAsString(createPollCommandOfNameAndOptions(pollName, "Option 3", "Option 4")))
+                .body(objectMapper.writeValueAsString(createPollCommandOfNameAndBallot(pollName, "Option 3", "Option 4")))
                 .when()
                 .post("/polls")
                 .then()
@@ -90,11 +90,11 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
     @Test
     void shouldFindCreatedPoll() {
         final var pollName = new PollName("Test-Poll.1");
-        final var createPollCommand = createPollCommandOfNameAndOptions(pollName, "Option 1", "Option 2");
+        final var createPollCommand = createPollCommandOfNameAndBallot(pollName, "Option 1", "Option 2");
         postPoll(createPollCommand);
         final var pollResponse = findPoll(pollName);
         assertThat(pollResponse.name()).isEqualTo(pollName);
-        assertThat(pollResponse.options()).containsExactly(new Option("Option 1"), new Option("Option 2"));
+        assertThat(pollResponse.ballot().options()).containsExactly(new Option("Option 1"), new Option("Option 2"));
         assertThat(pollResponse.state()).isEqualTo(PollState.INACTIVE);
     }
 
@@ -121,8 +121,8 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
                 .statusCode(404);
     }
 
-    private CreatePollCommand createPollCommandOfNameAndOptions(PollName name, String... options) {
-        return CreatePollCommand
+    private InitiatePollCommand createPollCommandOfNameAndBallot(PollName name, String... options) {
+        return InitiatePollCommand
                 .ofNameAndOptions(name, Arrays.stream(options).map(Option::new).toList());
     }
 }

@@ -1,5 +1,6 @@
 package de.tonypsilon.rankify.adapter.in.poll.exception;
 
+import de.tonypsilon.rankify.domain.DuplicateOptionsException;
 import de.tonypsilon.rankify.domain.TooFewPollOptionsException;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import org.springframework.core.annotation.Order;

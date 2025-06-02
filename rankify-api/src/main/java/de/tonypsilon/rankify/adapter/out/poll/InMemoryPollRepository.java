@@ -33,6 +33,6 @@ public class InMemoryPollRepository implements PollRepository {
     }
 
     private Poll copyPoll(Poll poll) {
-        return Poll.withNameOptionsAndState(poll.name(), new LinkedHashSet<>(poll.options()), poll.state());
+        return Poll.withNameOptionsAndState(poll.name(), new LinkedHashSet<>(poll.ballot().options()), poll.state());
     }
 }

@@ -2,7 +2,7 @@ package de.tonypsilon.rankify.adapter.in.poll;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.tonypsilon.rankify.application.usecase.CreatePollCommand;
+import de.tonypsilon.rankify.application.usecase.InitiatePollCommand;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.domain.PollState;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
@@ -21,20 +21,20 @@ abstract class AbstractPollIntegrationTest {
 
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
-    protected void postPoll(CreatePollCommand createPollCommand) {
+    protected void postPoll(InitiatePollCommand initiatePollCommand) {
         try {
             final var createPollResponse = given()
                     .port(port)
                     .contentType(ContentType.JSON)
-                    .body(objectMapper.writeValueAsString(createPollCommand))
+                    .body(objectMapper.writeValueAsString(initiatePollCommand))
                     .when()
                     .post("/polls")
                     .then()
                     .statusCode(201)
                     .extract()
-                    .as(CreatePollResponse.class);
+                    .as(InitiatePollResponse.class);
             assertThat(createPollResponse).isNotNull();
-            assertThat(createPollResponse.name()).isEqualTo(createPollCommand.name());
+            assertThat(createPollResponse.name()).isEqualTo(initiatePollCommand.name());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -86,6 +86,42 @@ abstract class AbstractPollIntegrationTest {
                     .response()
                     .as(ErrorResponse.class);
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected CastBallotResponse castBallot(PollName pollName, CastBallotCommand castBallotCommand) {
+        try {
+            return given()
+                    .port(port)
+                    .contentType(ContentType.JSON)
+                    .body(objectMapper.writeValueAsString(castBallotCommand))
+                    .when()
+                    .post("/polls/" + pollName.value() + "/ballots")
+                    .then()
+                    .statusCode(201)
+                    .extract()
+                    .response()
+                    .as(CastBallotResponse.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected ErrorResponse castBallotErrorResponse(PollName pollName, CastBallotCommand castBallotCommand) {
+        try {
+            return given()
+                    .port(port)
+                    .contentType(ContentType.JSON)
+                    .body(objectMapper.writeValueAsString(castBallotCommand))
+                    .when()
+                    .post("/polls/" + pollName.value() + "/ballots")
+                    .then()
+                    .statusCode(400)
+                    .extract()
+                    .response()
+                    .as(ErrorResponse.class);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }

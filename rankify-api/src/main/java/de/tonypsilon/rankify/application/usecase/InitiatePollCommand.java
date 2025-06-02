@@ -1,19 +1,15 @@
 package de.tonypsilon.rankify.application.usecase;
 
-import de.tonypsilon.rankify.adapter.in.poll.exception.DuplicateOptionsException;
-import de.tonypsilon.rankify.domain.Option;
-import de.tonypsilon.rankify.domain.Poll;
-import de.tonypsilon.rankify.domain.PollName;
-import de.tonypsilon.rankify.domain.TooFewPollOptionsException;
+import de.tonypsilon.rankify.domain.*;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.SequencedSet;
 
-public record CreatePollCommand(PollName name, SequencedSet<Option> options) {
+public record InitiatePollCommand(PollName name, SequencedSet<Option> options) {
 
-    public static CreatePollCommand ofNameAndOptions(PollName name, List<Option> optionsCollection) {
+    public static InitiatePollCommand ofNameAndOptions(PollName name, List<Option> optionsCollection) {
         var options = Collections.unmodifiableSequencedSet(new LinkedHashSet<>(optionsCollection));
         if (options.size() < 2) {
             throw new TooFewPollOptionsException();
@@ -21,7 +17,7 @@ public record CreatePollCommand(PollName name, SequencedSet<Option> options) {
         if (options.size() < optionsCollection.size()) {
             throw new DuplicateOptionsException();
         }
-        return new CreatePollCommand(name, options);
+        return new InitiatePollCommand(name, options);
     }
 
     public Poll toPoll() {

@@ -13,7 +13,7 @@ public class CreatePollUsecase {
         this.pollRepository = pollRepository;
     }
 
-    public PollName createPoll(final CreatePollCommand command) {
+    public PollName createPoll(final InitiatePollCommand command) {
         pollRepository.findByName(command.name()).ifPresent(poll -> {
             throw new PollAlreadyExistsException(command.name());
         });

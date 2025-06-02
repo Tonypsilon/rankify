@@ -1,6 +1,5 @@
 package de.tonypsilon.rankify.domain;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.SequencedSet;
@@ -8,23 +7,17 @@ import java.util.SequencedSet;
 public class Poll {
 
     private final PollName name;
-    private final SequencedSet<Option> options;
+    private final Ballot ballot;
     private PollState state = PollState.INACTIVE;
 
     private Poll(PollName name, SequencedSet<Option> options) {
         this.name = name;
-        if (options.size() < 2) {
-            throw new TooFewPollOptionsException();
-        }
-        this.options = new LinkedHashSet<>(options);
+        this.ballot = new Ballot(List.copyOf(options));
     }
 
     private Poll(PollName name, SequencedSet<Option> options, PollState state) {
         this.name = name;
-        if (options.size() < 2) {
-            throw new TooFewPollOptionsException();
-        }
-        this.options = new LinkedHashSet<>(options);
+        this.ballot = new Ballot(List.copyOf(options));
         this.state = state;
     }
 
@@ -43,8 +36,8 @@ public class Poll {
         return name;
     }
 
-    public List<Option> options() {
-        return List.copyOf(options);
+    public Ballot ballot() {
+        return ballot;
     }
 
     public PollState state() {
