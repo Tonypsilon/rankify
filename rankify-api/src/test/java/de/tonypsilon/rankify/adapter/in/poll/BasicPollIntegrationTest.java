@@ -99,7 +99,7 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
     }
 
     @Test
-    void shouldNotFindPollWithoutName() throws Exception {
+    void shouldNotFindPollWithoutName() {
         given()
                 .port(port)
                 .contentType(ContentType.JSON)
@@ -111,7 +111,7 @@ class BasicPollIntegrationTest extends AbstractPollIntegrationTest {
 
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
-    void shouldNotFindPollWithInvalidName(String invalidPollName) throws Exception {
+    void shouldNotFindPollWithInvalidName(String invalidPollName) {
         given()
                 .port(port)
                 .contentType(ContentType.JSON)
