@@ -90,19 +90,16 @@ abstract class AbstractPollIntegrationTest {
         }
     }
 
-    protected CastBallotResponse castBallot(PollName pollName, CastBallotCommand castBallotCommand) {
+    protected void castBallot(PollName pollName, CastBallotCommand castBallotCommand) {
         try {
-            return given()
+            given()
                     .port(port)
                     .contentType(ContentType.JSON)
                     .body(objectMapper.writeValueAsString(castBallotCommand))
                     .when()
-                    .post("/polls/" + pollName.value() + "/ballots")
+                    .patch("/polls/" + pollName.value() + "/votes")
                     .then()
-                    .statusCode(201)
-                    .extract()
-                    .response()
-                    .as(CastBallotResponse.class);
+                    .statusCode(204);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -115,7 +112,7 @@ abstract class AbstractPollIntegrationTest {
                     .contentType(ContentType.JSON)
                     .body(objectMapper.writeValueAsString(castBallotCommand))
                     .when()
-                    .post("/polls/" + pollName.value() + "/ballots")
+                    .patch("/polls/" + pollName.value() + "/votes")
                     .then()
                     .statusCode(400)
                     .extract()

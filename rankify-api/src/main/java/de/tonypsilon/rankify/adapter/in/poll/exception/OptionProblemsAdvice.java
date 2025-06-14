@@ -1,6 +1,7 @@
 package de.tonypsilon.rankify.adapter.in.poll.exception;
 
 import de.tonypsilon.rankify.domain.DuplicateOptionsException;
+import de.tonypsilon.rankify.domain.InvalidOptionException;
 import de.tonypsilon.rankify.domain.TooFewPollOptionsException;
 import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
 import org.springframework.core.annotation.Order;
@@ -24,6 +25,14 @@ public class OptionProblemsAdvice {
     @ResponseBody
     @ExceptionHandler(TooFewPollOptionsException.class)
     ResponseEntity<ErrorResponse> handleTooFewPollOptionsException(TooFewPollOptionsException exception) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse(exception.getMessage()));
+    }
+
+    @ResponseBody
+    @ExceptionHandler(InvalidOptionException.class)
+    ResponseEntity<ErrorResponse> handleInvalidOptionException(InvalidOptionException exception) {
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse(exception.getMessage()));

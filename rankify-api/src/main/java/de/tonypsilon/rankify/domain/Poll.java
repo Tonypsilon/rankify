@@ -1,14 +1,13 @@
 package de.tonypsilon.rankify.domain;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.SequencedSet;
+import java.util.*;
 
 public class Poll {
 
     private final PollName name;
     private final Ballot ballot;
     private PollState state = PollState.INACTIVE;
+    private final Collection<Vote> votes = new ArrayList<>();
 
     private Poll(PollName name, SequencedSet<Option> options) {
         this.name = name;
@@ -60,5 +59,22 @@ public class Poll {
 
     public void finish() {
         state = PollState.FINISHED;
+    }
+
+    /**
+     * Casts a ballot in the poll.
+     *
+     * @param vote the vote containing rankings of options
+     * @throws IllegalStateException    if the poll is not active
+     * @throws IllegalArgumentException if the ballot contains options not in the poll
+     */
+    public void castBallot(Vote vote) {
+        if (state != PollState.ACTIVE) {
+            throw new PollNotActiveException();
+        }
+        if (!vote.rankings().stream().map(Ranking::option).allMatch(ballot.options()::contains)) {
+            throw new InvalidOptionException();
+        }
+        votes.add(vote);
     }
 }

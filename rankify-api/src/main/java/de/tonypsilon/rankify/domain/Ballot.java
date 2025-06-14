@@ -13,7 +13,12 @@ public record Ballot(List<Option> options) {
         }
     }
 
-    public List<Option> getOptions() {
+    /**
+     * Return a defensive copy of the options.
+     *
+     * @return defensive copy of options
+     */
+    public List<Option> options() {
         return List.copyOf(options);
     }
 }

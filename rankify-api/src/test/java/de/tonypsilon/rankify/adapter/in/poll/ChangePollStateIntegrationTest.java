@@ -4,10 +4,12 @@ import de.tonypsilon.rankify.application.usecase.InitiatePollCommand;
 import de.tonypsilon.rankify.domain.Option;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.domain.PollState;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -168,6 +170,19 @@ public class ChangePollStateIntegrationTest extends AbstractPollIntegrationTest 
 
         // Then
         assertThat(response.state()).isEqualTo(PollState.FINISHED);
+    }
+
+    @Test
+    void shouldReturnNotFoundOnNonExistingPoll() throws Exception {
+        final var pollName = new PollName("Non_Existing_Poll");
+        given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsString(new ChangePollStateCommand(PollState.FINISHED)))
+                .when()
+                .patch("/polls/" + pollName.value())
+                .then()
+                .statusCode(404);
     }
 
 }

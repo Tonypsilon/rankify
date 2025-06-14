@@ -4,9 +4,15 @@ import de.tonypsilon.rankify.application.usecase.InitiatePollCommand;
 import de.tonypsilon.rankify.domain.Option;
 import de.tonypsilon.rankify.domain.PollName;
 import de.tonypsilon.rankify.domain.PollState;
+import de.tonypsilon.rankify.domain.Ranking;
+import de.tonypsilon.rankify.infrastructure.exception.ErrorResponse;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CastBallotIntegrationTest extends AbstractPollIntegrationTest {
 
@@ -17,18 +23,38 @@ public class CastBallotIntegrationTest extends AbstractPollIntegrationTest {
         postPoll(InitiatePollCommand.ofNameAndOptions(pollName,
                 List.of(new Option("Option 1"), new Option("Option 2"), new Option("Option 3"))));
 
+        // Activate the poll
+        changePollState(pollName, PollState.ACTIVE);
+
         // When a ballot is cast
-
-        // Then the ballot should be recorded correctly
-
+        List<Ranking> rankings = List.of(
+                new Ranking(new Option("Option 1"), 1),
+                new Ranking(new Option("Option 2"), 2),
+                new Ranking(new Option("Option 3"), 3)
+        );
+        CastBallotCommand command = new CastBallotCommand(rankings);
+        castBallot(pollName, command);
     }
 
     @Test
-    void shouldNotCastBallotForNonExistentPoll() {
+    void shouldNotCastBallotForNonExistentPoll() throws Exception {
         final var pollName = new PollName("Non_Existent_Poll");
         // When trying to cast a ballot for a non-existent poll
+        List<Ranking> rankings = List.of(
+                new Ranking(new Option("Option 1"), 1),
+                new Ranking(new Option("Option 2"), 2)
+        );
+        CastBallotCommand command = new CastBallotCommand(rankings);
 
-        // Then an error should be returned
+        // Then 404 Not Found should be returned
+        given()
+                .port(port)
+                .contentType(ContentType.JSON)
+                .body(objectMapper.writeValueAsString(command))
+                .when()
+                .patch("/polls/" + pollName.value() + "/votes")
+                .then()
+                .statusCode(404);
     }
 
     @Test
@@ -37,10 +63,19 @@ public class CastBallotIntegrationTest extends AbstractPollIntegrationTest {
         // Given a poll that is inactive
         postPoll(InitiatePollCommand.ofNameAndOptions(pollName,
                 List.of(new Option("Option 1"), new Option("Option 2"))));
+        // Ensure poll is in CREATED state (inactive)
 
         // When trying to cast a ballot for the inactive poll
+        List<Ranking> rankings = List.of(
+                new Ranking(new Option("Option 1"), 1),
+                new Ranking(new Option("Option 2"), 2)
+        );
+        CastBallotCommand command = new CastBallotCommand(rankings);
 
         // Then an error should be returned
+        ErrorResponse errorResponse = castBallotErrorResponse(pollName, command);
+        assertThat(errorResponse).isNotNull();
+        assertThat(errorResponse.message()).isEqualTo("Poll is not active");
     }
 
     @Test
@@ -52,8 +87,16 @@ public class CastBallotIntegrationTest extends AbstractPollIntegrationTest {
         changePollState(pollName, PollState.FINISHED);
 
         // When trying to cast a ballot for the finished poll
+        List<Ranking> rankings = List.of(
+                new Ranking(new Option("Option 1"), 1),
+                new Ranking(new Option("Option 2"), 2)
+        );
+        CastBallotCommand command = new CastBallotCommand(rankings);
 
         // Then an error should be returned
+        ErrorResponse errorResponse = castBallotErrorResponse(pollName, command);
+        assertThat(errorResponse).isNotNull();
+        assertThat(errorResponse.message()).isEqualTo("Poll is not active");
     }
 
     @Test
@@ -62,9 +105,19 @@ public class CastBallotIntegrationTest extends AbstractPollIntegrationTest {
         // Given a poll with two options
         postPoll(InitiatePollCommand.ofNameAndOptions(pollName,
                 List.of(new Option("Option 1"), new Option("Option 2"))));
+        // Activate the poll
+        changePollState(pollName, PollState.ACTIVE);
 
         // When trying to cast a ballot with duplicate options
+        List<Ranking> rankings = List.of(
+                new Ranking(new Option("Option 1"), 1),
+                new Ranking(new Option("Option 1"), 2)
+        );
+        CastBallotCommand command = new CastBallotCommand(rankings);
 
         // Then an error should be returned
+        ErrorResponse errorResponse = castBallotErrorResponse(pollName, command);
+        assertThat(errorResponse).isNotNull();
+        assertThat(errorResponse.message()).isEqualTo("Options must be pairwise distinct");
     }
 }

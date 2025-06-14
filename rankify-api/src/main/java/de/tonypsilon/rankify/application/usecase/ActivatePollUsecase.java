@@ -19,6 +19,7 @@ public class ActivatePollUsecase {
         var poll = pollRepository.findByName(pollName)
                 .orElseThrow(NotFoundException::new);
         poll.activate();
+        pollRepository.save(poll);
         return poll;
     }
 }
